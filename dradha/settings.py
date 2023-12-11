@@ -26,6 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ['SECRET_KEY']
+JWT_SECRET_KEY = os.environ['JWT_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -36,6 +37,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    ## LOCAL
+    # dradha apps
+    'useraccounts.apps.UseraccountsConfig',
+    ## THIRD PARTY
     # django-cors-headers
     'corsheaders',
     # django-rest-framework
@@ -44,8 +49,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     # django-rest-framework and required for dj-rest-auth
     'rest_framework.authtoken',
-    # dradha apps
-    'useraccounts.apps.UseraccountsConfig',
     # django-allauth
     'allauth',
     'allauth.account',
@@ -54,6 +57,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.instagram',
+    # dj-rest-auth
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    ## DJANGO 
     # django boilerplate and required for django-allauth
     'django.contrib.auth',
     'django.contrib.messages',
@@ -62,8 +69,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    # dj-rest-auth
-    'dj_rest_auth',
 ]
 
 MIDDLEWARE = [
@@ -81,11 +86,30 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+    'USER_ID_FIELD': 'userId',
+    'USER_ID_CLAIM': 'user_id',
+    'SIGNING_KEY': JWT_SECRET_KEY,
+}
+
 # django rest framework
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        #'dj_rest_auth.utils.JWTCookieAuthentication',
+    ),
 }
 
 CORS_ALLOWED_ORIGINS = [
@@ -130,6 +154,14 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+
+# https://dj-rest-auth.readthedocs.io/en/latest/installation.html#registration-optional
+# dj-rest-auth: for enabling standard registration. 
+SITE_ID = 1             # enabling standard registration. 
+REST_USE_JWT = True     # use JSON web tokens
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -195,6 +227,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL='useraccounts.User'
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'useraccounts.serializers.UserSerializer'
+}
 
 # login 
 LOGIN_URL='/admin/login/'
