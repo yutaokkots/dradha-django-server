@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'corsheaders',
     # django-rest-framework
     'rest_framework',
+    # django-rest-framework and required for dj-rest-auth
+    'rest_framework.authtoken',
     # dradha apps
     'useraccounts.apps.UseraccountsConfig',
     # django-allauth
@@ -58,6 +60,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+    # dj-rest-auth
+    'dj_rest_auth',
 ]
 
 MIDDLEWARE = [

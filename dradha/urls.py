@@ -21,5 +21,6 @@ urlpatterns = [
     path("api/auth/", include('useraccounts.urls')),
     # django-allauth paths
     path('accounts/', include('allauth.urls')),
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('admin/', admin.site.urls),
 ]
