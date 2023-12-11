@@ -1,0 +1,94 @@
+Set up
+
+1) create virtual environment, project, app, and install dependencies.
+ ** Project initialization
+    % django-admin startproject dradha
+ ** App initialization
+    % python3 manage.py startapp usersaccounts
+ ** Virtual Environment initialization
+    % python3 -m venv .venv
+    % . .venv/bin/activate
+ ** App Dev mode
+    % python3 manage.py runserver
+ ** Save dependencies
+    % pip list   			#Check installed dependencies
+    % pip freeze > requirements.txt     #save package information
+    % pip install -r requirements.txt   #go through file to install packages
+ ** Dependencies
+    % pip install djangorestframework           # https://pypi.org/project/djangorestframework/
+    % pip install pylint pylint-django          # https://pypi.org/project/pylint-django/
+    ## to use: % pylint foldername/filename.py
+    % pip install black                         # https://pypi.org/project/black/
+    ## to use: % black foldername/filename.py
+    % pip install allauth                       # https://docs.allauth.org/en/latest/installation/quickstart.html
+    % pip install django-cors-headers           # https://pypi.org/project/django-cors-headers/
+    % pip install django-environ                # https://django-environ.readthedocs.io/en/latest/install.html
+    % pip install psycopg2                      # https://pypi.org/project/psycopg2/
+** Git
+    % touch .gitignore
+    % git init
+    % git remote add origin <url>
+
+2) initialize psql database using 'createdb' command
+ ** Create a new postgresql database
+    % createdb users
+ ** create new app within project
+    % python3 manage.py startapp users
+ ** migrate
+    % python3 manage.py migrate
+
+ ** add the new app, 'profile' (or whatever app name), into settings.py -> 'INSTALLED_APPS'
+    open profile/apps.py to view the class that is generated
+            INSTALLED_APPS = [
+                'profile.apps.ProfileConfig',
+                ...
+                ]
+ ** makemigration and migrate for <app_name>
+    % python3 manage.py makemigrations <app_name>
+    % python3 manage.py migrate <app_name>
+
+Set up .env and obfuscate Django-secret-key:
+    (.venv) % pip install django-environ 
+
+    settings.py
+        import os
+
+        #pip3 install django-environ
+        import environ
+
+        environ.Env()
+        environ.Env.read_env()
+        . . . 
+
+        SECRET_KEY = os.environ['SECRET_KEY']
+
+
+Django CORS-headers
+5) in order to specify the incoming HTTP request and allow the front-end app to access
+the uri endpoints of the front end, install Django Cors-headers
+https://pypi.org/project/django-cors-headers/
+https://github.com/adamchainz/django-cors-headers
+    # enter virtual environment
+    % . .venv/bin/activate
+
+    # install django-cors-headers
+    % pip install django-cors-headers
+
+    # save to requirements.txt
+    % pip freeze > requirements.txt
+
+    # update 'settings.py' file:
+    INSTALLED_APPS = [
+        'corsheaders',
+        . . . ]
+
+    MIDDLEWARE = [
+        "corsheaders.middleware.CorsMiddleware",
+        "django.middleware.common.CommonMiddleware",
+        . . . ]
+
+    CORS_ALLOWED_ORIGINS = [
+        "https://dradha.co",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
