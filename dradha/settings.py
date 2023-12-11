@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'corsheaders',
     # django-rest-framework
     'rest_framework',
+    # rest-framework-simplejwt
+    'rest_framework_simplejwt',
     # django-rest-framework and required for dj-rest-auth
     'rest_framework.authtoken',
     # dradha apps
@@ -78,6 +80,13 @@ MIDDLEWARE = [
     # django-allauth
     "allauth.account.middleware.AccountMiddleware",
 ]
+
+# django rest framework
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 CORS_ALLOWED_ORIGINS = [
     "https://dradha.co",
