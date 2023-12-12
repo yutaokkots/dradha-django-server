@@ -140,3 +140,50 @@ https://github.com/adamchainz/django-cors-headers
    > uncomment above and run
       % python3 manage.py makemigrations
       % python3 manage.py migrate
+
+7) Create superuser
+ ** Creating a superuser that can log in to the admin site
+    % python3 manage.py createsuperuser
+    >>> Username (leave blank to use 'name'):
+    >>> Email address:
+    >>> Password:
+    >>> Password (again):
+    >>> Superuser created successfully.
+
+
+8) Views and urls setup:
+   useraccounts/views.py > Example: Github oauth
+      . . . 
+      from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+      from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+      from dj_rest_auth.registration.views import SocialLoginView
+      from django.conf import settings
+
+      FRONT_END_APP = "http://localhost:3000"
+
+      class GithubLoginView(SocialLoginView):
+         authentication_classes = [] #disable authetication; override 'allowed origins' in settings.py in production
+         adapter_class = GitHubOAuth2Adapter
+         callback_url = FRONT_END_APP
+         client_class = OAuth2Client
+   dradha/urls.py > Example:
+      . . . 
+      urlpatterns = [
+         # app paths
+         path("api/social/login/", include('useraccounts.urls')), <- 
+         # django-allauth paths
+         path('accounts/', include('allauth.urls')),
+         path('api/auth/', include('dj_rest_auth.urls')),         <- 
+         # djangorestframework-simplejwt paths
+         path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+         path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+         # admin path
+         path('admin/', admin.site.urls),
+      ]
+   useraccounts/urls.py > Example:
+      . . . 
+      from useraccounts.views import GithubLoginView
+      urlpatterns = [
+         path("github/", GithubLoginView.as_view(), name="github"),
+      ]
+         

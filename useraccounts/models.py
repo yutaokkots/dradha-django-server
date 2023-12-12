@@ -13,7 +13,7 @@ class CustomUserModelManager(BaseUserManager):
             username=username,
             email=self.normalize_email(email)
         )
-        user.set_password[password]
+        user.set_password(password)
         user.save(using=self._db)
         return user
     
@@ -46,7 +46,7 @@ class User(AbstractUser, PermissionsMixin):
         Email field.
     """
     userId = models.CharField(
-        max_length=30,
+        max_length=40,
         default=uuid4,
         primary_key=True,
         editable=False)
