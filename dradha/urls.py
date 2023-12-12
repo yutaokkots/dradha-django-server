@@ -24,7 +24,7 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     # app paths
-    path("api/social/login/", include('useraccounts.urls')),
+    path("api/login/", include('useraccounts.urls')),
     # django-allauth paths
     path('accounts/', include('allauth.urls')),
     path('api/auth/', include('dj_rest_auth.urls')),

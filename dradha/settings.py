@@ -107,8 +107,15 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        #'dj_rest_auth.utils.JWTCookieAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ),
+}
+
+# dj-rest-auth configuration for using JWT
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'dradha-auth',
+    'JWT_AUTH_REFRESH_COOKIE': 'dradha-refresh-token',
 }
 
 CORS_ALLOWED_ORIGINS = [

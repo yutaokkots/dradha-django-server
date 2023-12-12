@@ -7,9 +7,9 @@ from django.conf import settings
 FRONT_END_APP = "http://localhost:3000"
 
 class GithubLoginView(SocialLoginView):
-    authentication_classes = [] #disable authetication; override 'allowed origins' in settings.py in production
+#    authentication_classes = [] #disable authetication; override 'allowed origins' in settings.py in production
     adapter_class = GitHubOAuth2Adapter
     callback_url = FRONT_END_APP
     client_class = OAuth2Client
     
-    
+
