@@ -1,8 +1,5 @@
 """Serializer classes for the User model."""
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
-from django.core.validators import EmailValidator, MinLengthValidator, MaxLengthValidator
-from django.contrib.auth.password_validation import validate_password
 from useraccounts.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,9 +20,11 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['userId', 'username', 'email', 'password']
 
     def create(self, validated_data):
+        """Create method for creating a User with the validated data."""
         user = User.objects.create_user(
             validated_data["username"],
             validated_data["email"],
             validated_data["password"],
         )
         return user
+    

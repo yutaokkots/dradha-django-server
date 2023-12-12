@@ -4,31 +4,31 @@ Set up
  ** Project initialization
     % django-admin startproject dradha
  ** App initialization
-    % python3 manage.py startapp usersaccounts
+    % python3 manage.py startapp useraccounts
  ** Virtual Environment initialization
     % python3 -m venv .venv
     % . .venv/bin/activate
  ** App Dev mode
     % python3 manage.py runserver
  ** Save dependencies
-    % pip list   			                    # Check installed dependencies.
+    % pip list   			                        # Check installed dependencies.
     % pip freeze > requirements.txt             # Create a record of the dependencies.
     % pip install -r requirements.txt           # Installs dependencies in requirements.txt.
  ** Dependencies
-    % pip install djangorestframework           # https://pypi.org/project/djangorestframework/
-                                                    For Restful API endpoints in Django.
     % pip install pylint pylint-django          # https://pypi.org/project/pylint-django/
     ## to use: % pylint foldername/filename.py      For linting Python code.
     % pip install black                         # https://pypi.org/project/black/
     ## to use: % black foldername/filename.py       For cleaning up Python formatting.
+    % pip install psycopg2                      # https://pypi.org/project/psycopg2/
+                                                    For PostgresQL interface
+    % pip install djangorestframework           # https://pypi.org/project/djangorestframework/
+                                                    For Restful API endpoints in Django.
     % pip install allauth                       # https://docs.allauth.org/en/latest/installation/quickstart.html
                                                     For third-party OAuth
     % pip install django-cors-headers           # https://pypi.org/project/django-cors-headers/
                                                     For enabling cross-origin resource sharing.
     % pip install django-environ                # https://django-environ.readthedocs.io/en/latest/install.html
                                                     For using the environmental variables.
-    % pip install psycopg2                      # https://pypi.org/project/psycopg2/
-                                                    For PostgresQL interface
     % pip install dj-rest-auth                  # https://dj-rest-auth.readthedocs.io/en/latest/installation.html#registration-optional
                                                     For Authentication REST endpoints
     % pip install djangorestframework-simplejwt # https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html#installation
@@ -37,8 +37,17 @@ Set up
     % touch .gitignore
     % git init
     % git remote add origin <url>
+ ** Virtual environments.
+    # enter virtual environment
+    % . .venv/bin/activate
 
-2) initialize psql database using 'createdb' command
+    # install django-cors-headers
+    % pip install django-cors-headers
+
+    # save to requirements.txt
+    % pip freeze > requirements.txt
+
+2) initialize psql database.
  ** Create a new postgresql database
     % psql \ CREATE DATABASE dradhaserver;
     or
@@ -58,7 +67,7 @@ Set up
     % python3 manage.py makemigrations <app_name>
     % python3 manage.py migrate <app_name>
 
-Set up .env and obfuscate Django-secret-key:
+3) Set up .env and obfuscate Django-secret-key:
     (.venv) % pip install django-environ 
 
     settings.py
@@ -73,21 +82,26 @@ Set up .env and obfuscate Django-secret-key:
 
         SECRET_KEY = os.environ['SECRET_KEY']
 
+4) Notes on setting up oauth. (source: https://mahieyin-rahmun.medium.com/how-to-configure-social-authentication-in-a-next-js-next-auth-django-rest-framework-application-cb4c82be137)
+   Required dependencies. 
+      % pip install djangorestframework
+      % pip install django-cors-headers
+      % pip install dj-rest-auth  
+      % pip install allauth  
+      % pip install djangorestframework-simplejwt
+   Major changes made in:
+      project/settings.py
+      project/urls.py
+      useraccounts/admin.py
+      useraccounts/models.py
+      useraccounts/serializers.py
 
-Django CORS-headers
-5) in order to specify the incoming HTTP request and allow the front-end app to access
+
+5) Django CORS-headers.
+In order to specify the incoming HTTP request and allow the front-end app to access
 the uri endpoints of the front end, install Django Cors-headers
 https://pypi.org/project/django-cors-headers/
 https://github.com/adamchainz/django-cors-headers
-    # enter virtual environment
-    % . .venv/bin/activate
-
-    # install django-cors-headers
-    % pip install django-cors-headers
-
-    # save to requirements.txt
-    % pip freeze > requirements.txt
-
     # update 'settings.py' file:
     INSTALLED_APPS = [
         'corsheaders',
@@ -100,8 +114,29 @@ https://github.com/adamchainz/django-cors-headers
 
     CORS_ALLOWED_ORIGINS = [
         "https://dradha.co",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
+        "http://localhost:3000",    # for NextJS endpoints; customize.
+        "http://127.0.0.1:3000",    # for NextJS endpoints; customize.
     ]
 
-    
+6) Notes on setting up migrations. 
+   For migrating a custom user model, it may be necessary to run migrations 
+   with certain settings commented out. 
+   (source: https://stackoverflow.com/questions/44651760/django-db-migrations-exceptions-inconsistentmigrationhistory)
+   > project/settings.py
+      INSTALLED_APPS = [
+         ...
+         #'django.contrib.admin',
+         ...
+      ]
+   > project/urls.py
+      urlpatterns = [
+         ...
+         #path('admin/', admin.site.urls) 
+         ...
+      ]
+   > run
+      % python3 manage.py makemigrations useraccounts
+      % python3 manage.py migrate useraccounts
+   > uncomment above and run
+      % python3 manage.py makemigrations
+      % python3 manage.py migrate

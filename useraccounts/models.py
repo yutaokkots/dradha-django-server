@@ -1,7 +1,7 @@
-"""A subpackage providing additional fields to the User model."""
+"""User model module providing additional fields to the User model."""
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
-from django.core.validators import EmailValidator, MinLengthValidator
+from django.core.validators import MinLengthValidator
 from uuid import uuid4
 
 class CustomUserModelManager(BaseUserManager):
@@ -38,8 +38,12 @@ class User(AbstractUser, PermissionsMixin):
 
     Attributes
     ----------
+    userId (CharField):
+        Unique id field using uuid4.
     username (CharField):
-        A field for storing the username.
+        Username field
+    email (EmailField):
+        Email field.
     """
     userId = models.CharField(
         max_length=30,
